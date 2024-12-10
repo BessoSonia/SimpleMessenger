@@ -4,9 +4,8 @@ import tornado.websocket
 import redis
 import threading
 import json
-import uuid
 
-# Статический список для хранения клиентов
+
 class ChatWebSocketHandler(tornado.websocket.WebSocketHandler):
     clients = {}  # Словарь для хранения всех подключенных клиентов по их id
 
@@ -17,28 +16,21 @@ class ChatWebSocketHandler(tornado.websocket.WebSocketHandler):
         self.update_clients_list()
 
     def on_message(self, message):
-        # Сообщение приходит в формате JSON, нужно его разобрать
+        # Сообщение приходит в формате JSON
         try:
             msg_data = json.loads(message)
             text = msg_data.get("text")
             if text:
                 formatted_message = f"{self.client_id}: {text}"  # Форматируем сообщение с clientid
 
-                # Логируем отправляемое сообщение
-                print(f"Sending message: {formatted_message}")
-
-                # Отправляем сообщение всем подключенным клиентам
                 for client in self.clients.values():
                     client.write_message(formatted_message)
 
-                # Логируем, что сообщение было отправлено всем клиентам
-                print(f"Message sent to {len(self.clients)} clients")
-
                 # Публикуем сообщение в Redis
                 redis_client.publish("chat", formatted_message)
-                print(f"Message published to Redis: {formatted_message}")
             else:
                 print("Received empty message")
+
         except json.JSONDecodeError:
             print("Received invalid message format")
 
@@ -52,7 +44,6 @@ class ChatWebSocketHandler(tornado.websocket.WebSocketHandler):
         # Обновляем список онлайн-клиентов и передаем его всем
         online_clients = list(self.clients.keys())
         for client in self.clients.values():
-            # Отправляем обновленный список онлайн-клиентов каждому
             client.write_message(json.dumps({"event": "update_clients", "clients": online_clients}))
 
 
@@ -63,7 +54,6 @@ def redis_subscriber(client, callback):
     print("Subscribed to Redis channel 'chat'")
     for message in pubsub.listen():
         if message["type"] == "message":
-            print(f"Received message from Redis: {message['data']}")  # Логируем полученное сообщение
             callback(message["data"])
 
 

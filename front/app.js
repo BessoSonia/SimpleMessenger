@@ -4,15 +4,14 @@ ws.onmessage = function(event) {
     let message;
     
     try {
-        message = JSON.parse(event.data); // Попытка распарсить как JSON
+        message = JSON.parse(event.data);
     } catch (e) {
-        message = event.data; // Если не получилось, просто берем текст
+        message = event.data;
     }
 
-    // Если сообщение содержит событие "update_clients", то обновляем список пользователей
     if (message.event === "update_clients") {
         const usersList = document.getElementById("users-list");
-        usersList.innerHTML = "";  // Очищаем текущий список
+        usersList.innerHTML = "";
 
         message.clients.forEach(client => {
             const li = document.createElement("li");
@@ -20,13 +19,10 @@ ws.onmessage = function(event) {
             usersList.appendChild(li);
         });
     } else {
-        // В другом случае, это обычное текстовое сообщение
         const chatWindow = document.getElementById("chat");
         const msgDiv = document.createElement("div");
-        msgDiv.textContent = message; // Добавляем текст сообщения
+        msgDiv.textContent = message;
         chatWindow.appendChild(msgDiv);
-
-        // Прокручиваем чат вниз, чтобы увидеть последнее сообщение
         chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 };
@@ -38,8 +34,8 @@ function sendMessage() {
     const text = input.value.trim();
     
     if (text !== "") {
-        const message = JSON.stringify({ text: text });  // Создаем объект сообщения
-        ws.send(message);  // Отправляем сообщение на сервер
-        input.value = "";  // Очищаем поле ввода
+        const message = JSON.stringify({ text: text });
+        ws.send(message);
+        input.value = "";
     }
 }
