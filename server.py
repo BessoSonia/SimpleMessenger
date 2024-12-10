@@ -46,6 +46,9 @@ class ChatWebSocketHandler(tornado.websocket.WebSocketHandler):
         for client in self.clients.values():
             client.write_message(json.dumps({"event": "update_clients", "clients": online_clients}))
 
+    def check_origin(self, origin):
+        return True  # Разрешить все подключения
+
 
 # Функция для работы с Redis Pub/Sub
 def redis_subscriber(client, callback):
