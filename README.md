@@ -21,7 +21,7 @@
     cd SimpleMessenger
     ```
 
-3. Установите зависимости (python-telegram-bot)
+3. Установите зависимости
 
     ```bash
     pip install -r requirements.txt
