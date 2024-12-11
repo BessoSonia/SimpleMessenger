@@ -17,8 +17,8 @@
 2. Клонируйте репозиторий и перейдите в директорию проекта:
 
     ```bash
-    https://github.com/BessoSonia/SendMailBot
-    cd SendMailBot
+    https://github.com/BessoSonia/SimpleMessenger
+    cd SimpleMessenger
     ```
 
 3. Установите зависимости (python-telegram-bot)
